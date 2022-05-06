@@ -1,7 +1,7 @@
 ---
 version: "3.9"
 services:
-  dns:
+  rpi-pgsql:
     image: postgres:14.2
     container_name: rpi-pgsql
     environment:
@@ -13,4 +13,15 @@ services:
       - ./data/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
+  rpi-grafana:
+    image: grafana/grafana:8.5.2
+    container_name: rpi-grafana
+    environment:
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+    volumes:
+      - ./data/grafana-init/datasources:/etc/grafana/provisioning/datasources
+    ports:
+      - "9000:3000"
 ...

@@ -4,31 +4,37 @@ import smbus2
 import RPi.GPIO as GPIO
 from time import sleep
 
-## setup bme280
+# constants
+delay_s = 10
+average_window = 10
+
+# setup bme280
 port = 1
 address = 0x76
 bus = smbus2.SMBus(port)
-bme280.load_calibration_params(bus,address)
+bme280.load_calibration_params(bus, address)
 
-## setup gpio leds
+# setup gpio leds
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
-red=21
-yellow=20
-blue=16
-green=12
+red = 21
+yellow = 20
+blue = 16
+green = 12
 
 GPIO.setup(red, GPIO.OUT)
 GPIO.setup(yellow, GPIO.OUT)
 GPIO.setup(blue, GPIO.OUT)
 GPIO.setup(green, GPIO.OUT)
 
+
 def reset_all():
     GPIO.output(red, False)
     GPIO.output(yellow, False)
     GPIO.output(blue, False)
     GPIO.output(green, False)
+
 
 def led_dance(humidity):
     if humidity > 60:
@@ -44,10 +50,11 @@ def led_dance(humidity):
         reset_all()
         GPIO.output(yellow, True)
 
+
 while True:
-    bme280_data = bme280.sample(bus,address)
-    humidity  = bme280_data.humidity
-    pressure  = bme280_data.pressure
+    bme280_data = bme280.sample(bus, address)
+    humidity = bme280_data.humidity
+    pressure = bme280_data.pressure
     ambient_temperature = bme280_data.temperature
     print(humidity, pressure, ambient_temperature)
     led_dance(humidity)

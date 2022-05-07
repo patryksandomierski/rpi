@@ -9,7 +9,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     volumes:
-      - ./data/db:/var/lib/postgresql/data
+#      - ./data/db:/var/lib/postgresql/data
       - ./data/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
@@ -22,6 +22,7 @@ services:
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
     volumes:
       - ./data/grafana-init/datasources:/etc/grafana/provisioning/datasources
+      - ./data/grafana-init/dashboards:/etc/grafana/provisioning/dashboards
     ports:
       - "9000:3000"
 ...

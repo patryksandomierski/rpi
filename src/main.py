@@ -8,7 +8,7 @@ import psycopg2
 import smbus2
 
 # constants
-delay_s = 1
+delay_s = 10
 
 # bme280 setup
 port = 1

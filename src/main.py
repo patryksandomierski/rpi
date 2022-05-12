@@ -31,15 +31,24 @@ def main():
     cursor = connection.cursor()
     query = """INSERT INTO climate (measure_timestamp, temperature, humidity, pressure)
         VALUES(%s, %s, %s, %s);"""
-    while True:
-        bme280_data = bme280.sample(bus, address)
-        temperature = bme280_data.temperature
-        humidity = bme280_data.humidity
-        pressure = bme280_data.pressure
-        logging.info("%s %s %s", temperature, humidity, pressure)
-        cursor.execute(query, (datetime.now(timezone.utc), temperature, humidity, pressure))
-        connection.commit()
-        sleep(delay_s)
+    try:
+        logging.info("starting sampling and storing data to db")
+        while True:
+            bme280_data = bme280.sample(bus, address)
+            temperature = bme280_data.temperature
+            humidity = bme280_data.humidity
+            pressure = bme280_data.pressure
+            logging.info("temp=%s\thumi=%s\tpress=%s", temperature, humidity, pressure)
+            cursor.execute(query, (datetime.now(timezone.utc), temperature, humidity, pressure))
+            connection.commit()
+            sleep(delay_s)
+    except KeyboardInterrupt:
+        logging.info("gracefully exiting since process interrupted")
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
+        logging.info("the end")
 
 
 if __name__ == '__main__':

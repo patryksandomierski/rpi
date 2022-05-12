@@ -48,3 +48,12 @@ If bme280 is connected to rpi, to check proper bus adress: `i2cdetect -y 1`
 ```bash
 sudo pacman -S postgresql-libs
 ```
+
+### trivia
+
+```bash
+# run in background even if ssh session is closed
+nohup src/main.py &
+# SIGINT (same as ctrl+c for foreground app) to gracefully end process
+kill -2 $(pgrep main.py)
+```

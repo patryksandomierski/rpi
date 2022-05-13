@@ -1,11 +1,11 @@
-# rpi - psql - grafana = RPG ;)
+# rpi - pgsql - grafana = RPG ;)
 
 ## prerequisites on rpi4
 
 Used in this project:
-- RPi4
+- RPi4 with Raspbian 11 ("heavy" version)
 - bme280
-- breadboard and jumper wires
+- breadboard and jumper wires (I'm not an electronics engineer... :)
 
 ### docker on rpi4
 
@@ -17,8 +17,10 @@ curl -fsSL https://get.docker.com -o get-docker.sh
 sudo bash get-docker.sh
 sudo usermod -aG docker $(whoami)
 sudo reboot
+# verify
 docker --version
 sudo pip install docker-compose
+# verify
 docker-compose --version
 ```
 
@@ -39,7 +41,7 @@ Enable i2c interface using cli:
 5. ...reboot now? `Yes`
 
 Install bme280 python library: `sudo pip install RPi.bme280`
-If bme280 is connected to rpi, to check proper bus adress: `i2cdetect -y 1`
+If bme280 is connected to rpi, to check proper bus address, use: `i2cdetect -y 1`
 
 ## local development
 
@@ -54,6 +56,6 @@ sudo pacman -S postgresql-libs
 ```bash
 # run in background even if ssh session is closed
 nohup src/main.py &
-# SIGINT (same as ctrl+c for foreground app) to gracefully end process
+# SIGINT (same as ctrl+c for foreground app) to gracefully close process
 kill -2 $(pgrep main.py)
 ```

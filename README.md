@@ -5,7 +5,7 @@
 Used in this project:
 - RPi4 with Raspbian 11 ("heavy" version)
 - bme280
-- DFRobot DFR0603
+- DFR0603
 - breadboard and jumper wires (I'm not an electronics engineer... :)
 
 ### docker on rpi4
@@ -46,15 +46,17 @@ Enable i2c interface:
 Install bme280 python library: `sudo pip install RPi.bme280`.
 
 If bme280 is connected to rpi, to check proper bus address, use: `i2cdetect -y $N`.
-Please, refer how to setup another bus [here](#1-multiple-i2c-devices) so you can find `$N` ;)
+Please, refer how to set up another bus [here](#multiple-i2c-devices), so you can find `$N` ;)
 
-### DFR0603 (lcd screen, uses i2c and gpio) on rpi4
+### DFR0603 (lcd screen with buttons, uses i2c and gpio) on rpi4
 
 Just install `sudo pip install wiringpi`, device api library is already imported from [here](https://github.com/DFRobot/DFRobot_RGB1602_RaspberryPi).
 
 ## local development
 
-### manjaro - install before other requirements
+### manjaro
+
+install before other requirements
 
 ```bash
 sudo pacman -S postgresql-libs

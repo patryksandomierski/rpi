@@ -21,7 +21,7 @@ while True:
     ambient_temperature = bme280_data.temperature
     print(humidity, pressure, ambient_temperature)
     lcd.setCursor(0, 0)
-    temp_str = "Temp: " + f"{ambient_temperature:.2f}" + " oC"
+    temp_str = "Temp.:  " + f"{ambient_temperature:.2f}" + " oC"
     lcd.printout(temp_str)
     lcd.setCursor(0, 1)
     humidity_str = "Wilgot.: " + f"{humidity:.2f}" + " %"

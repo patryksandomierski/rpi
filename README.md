@@ -46,7 +46,7 @@ Enable i2c interface:
 Install bme280 python library: `sudo pip install RPi.bme280`.
 
 If bme280 is connected to rpi, to check proper bus address, use: `i2cdetect -y $N`.
-Please, refer how to set up another bus [here](#multiple-i2c-devices), so you can find `$N` ;)
+`$N` defaults to `1` but since we are using DFR0603, please refer how to set up new i2c bus [here](#multiple-i2c-devices) and get new `$N` :D
 
 ### DFR0603 (lcd screen with buttons, uses i2c and gpio) on rpi4
 
@@ -75,9 +75,11 @@ kill -2 $(pgrep main.py)
 
 #### multiple i2c devices
 
-Add to `/boot/config.txt` e.g. `dtoverlay=i2c-gpio,bus=3,i2c_gpio_delay_us=1,i2c_gpio_sda=23,i2c_gpio_scl=27` for bus 3.
+Create new bus by adding to `/boot/config.txt` e.g. `dtoverlay=i2c-gpio,bus=3,i2c_gpio_delay_us=1,i2c_gpio_sda=23,i2c_gpio_scl=27` for bus 3 and reboot.
+Now some gpio pins will be acting like i2c ones, in this example `gpio-23=sda` and `gpio-27=scl`.
+To validate settings, use `i2cdetect -l` - new bus should be available.
 
-Remember to list first higher buses, e.g. 5, 4, 3. Don't use bus 0 and 2.
+Remember to list buses in reverse order, e.g. 5, 4, 3. Don't use bus 0 and 2.
 
 Pick free GPIO interfaces, e.g. DFR0603 overlay optionally reserves GPIO 16 to 20 for handling buttons.
 

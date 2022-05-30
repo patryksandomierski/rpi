@@ -11,7 +11,7 @@ import smbus2
 delay_s = 10
 
 # bme280 setup
-port = 1
+port = 3  # default is 1 but we use multiple i2c devices (check README.md)
 address = 0x76
 bus = smbus2.SMBus(port)
 bme280.load_calibration_params(bus, address)

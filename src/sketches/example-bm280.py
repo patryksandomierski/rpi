@@ -3,7 +3,7 @@ import bme280
 import smbus2
 from time import sleep
 
-port = 1
+port = 3
 address = 0x76 # check by `i2cdetect -y 1`
 bus = smbus2.SMBus(port)
 

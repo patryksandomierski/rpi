@@ -32,22 +32,32 @@ def lcd_read_buttons():
     return Button.NONE
 
 
-def main():
+def lcd_print_messages(messages, indexes):
     lcd.setCursor(0, 0)
-    lcd.printout("Pushed button:")
-    num = 0
+    lcd.printout(messages[indexes[0]].ljust(16))
+    lcd.setCursor(0, 1)
+    lcd.printout(messages[indexes[1]].ljust(16))
+
+
+def main():
     btn_pressed = Button.NONE
+
+    messages = ["1st message", "2nd message", "hoooray, im third!", "i guess im last...?"]
+    indexes = deque(list(range(len(messages))))
+
     while True:
-        lcd.setCursor(0, 1)
+        lcd_print_messages(messages, indexes)
         btn_last_state = btn_pressed
         # noinspection PyUnusedLocal
         btn_pressed = lcd_read_buttons()
         time.sleep(0.2)
         btn_pressed = lcd_read_buttons()
         if btn_pressed != Button.NONE and btn_pressed != btn_last_state:
-            num += 1
-            str_out = '{}          '.format(str(num))
-            lcd.printout(str_out)
+            if btn_pressed == Button.UP:
+                indexes.rotate(-1)
+            elif btn_pressed == Button.DOWN:
+                indexes.rotate(1)
+            lcd_print_messages(messages, indexes)
 
 
 if __name__ == '__main__':

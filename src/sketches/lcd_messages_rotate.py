@@ -35,13 +35,17 @@ def lcd_read_buttons():
 def main():
     lcd.setCursor(0, 0)
     lcd.printout("Pushed button:")
+    btn_last_state = Button.NONE
     while True:
         lcd.setCursor(0, 1)
         # noinspection PyUnusedLocal
         btn_pressed = lcd_read_buttons()
         time.sleep(0.2)
         btn_pressed = lcd_read_buttons()
-        lcd.printout(btn_pressed.name)
+        if btn_pressed != Button.NONE:
+            lcd.printout(btn_pressed.name)
+        else:
+            lcd.printout("None            ")
 
 
 if __name__ == '__main__':

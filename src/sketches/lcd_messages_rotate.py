@@ -69,10 +69,10 @@ def bme280_read_data_thread():
 
 
 def get_sensors_readable_data():
-    return ['Temp.      {}'.format(f"{temp:.2f}"),
-            'Wilg.      {}'.format(f"{humi:.2f}"),
-            'Cisn.     {}'.format(f"{press:.2f}"),
-            'Temp zewn. {}'.format(f"{probe_temp:.2f}")]
+    return ['Temp.     {}'.format(f"{temp:.3f}"),
+            'Wilg.     {}'.format(f"{humi:.3f}"),
+            'Cisn.    {}'.format(f"{press:.3f}"),
+            'Temp zewn.{}'.format(f"{probe_temp:.3f}")]
 
 
 def ds18b20_read_data_thread():

@@ -109,7 +109,7 @@ def main():
     indexes = deque(list(range(len(messages))))
 
     btn_hold = False
-    t1 = 0.0
+    time_btn_hold = 0.0
 
     while True:
         messages = get_sensors_readable_data()
@@ -130,14 +130,14 @@ def main():
         # hold >2.0s
         elif btn_pressed != Button.NONE and btn_pressed == btn_last_state:
             if not btn_hold:
-                t1 = perf_counter()
+                time_btn_hold = perf_counter()
             btn_hold = True
-            if perf_counter() - t1 > 2.0:
+            if perf_counter() - time_btn_hold > 2.0:
                 if btn_pressed == Button.SELECT:
                     lcd_print_messages(["GG WP", "ciri0x5a"])
         else:
             btn_hold = False
-            t1 = 0.0
+            time_btn_hold = 0.0
 
 
 if __name__ == '__main__':

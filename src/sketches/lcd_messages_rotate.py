@@ -45,7 +45,7 @@ def main():
         btn_pressed = lcd_read_buttons()
         if btn_pressed != Button.NONE and btn_last_state != btn_pressed:
             num += 1
-            str_out = format("{}          ", str(num))
+            str_out = '{}          '.format(str(num))
             lcd.printout(str_out)
             btn_last_state = btn_pressed
 

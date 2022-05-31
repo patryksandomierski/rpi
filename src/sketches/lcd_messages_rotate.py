@@ -26,8 +26,9 @@ class Button(Enum):
 
 def lcd_read_buttons():
     for btn in Button:
-        if GPIO.input(btn.value) == 1:
-            return btn
+        if btn != Button.NONE:
+            if GPIO.input(btn.value) == 1:
+                return btn
     return Button.NONE
 
 

@@ -7,6 +7,7 @@ import bme280
 import smbus2
 import RPi.GPIO as GPIO
 import rgb1602
+import w1thermsensor
 
 # setup bme280
 port = 3
@@ -22,6 +23,8 @@ GPIO.setup(17, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(19, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(20, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+# setup ds18b20
+ds18b20 = w1thermsensor.W1ThermSensor()
 
 
 class Button(Enum):
@@ -56,23 +59,27 @@ def bme280_read_data():
     return temperature, humidity, pressure
 
 
+def ds18b20_read_data():
+    return ds18b20.get_temperature()
+
+
 def bme280_get_readable_data():
     temp, humi, press = bme280_read_data()
-    return ['Temp.: {}'.format(f"{temp:.2f}").ljust(16),
-            'Wilg.: {}'.format(f"{humi:.2f}").ljust(16),
-            'Cisn.: {}'.format(f"{press:.2f}").ljust(16)]
+    probe_temp = ds18b20_read_data()
+    return ['Temp.    : {}'.format(f"{temp:.2f}"),
+            'Wilg.    : {}'.format(f"{humi:.2f}"),
+            'Cisn.    : {}'.format(f"{press:.2f}"),
+            'Temp out.: {}'.format(f"{probe_temp:.2f}")]
 
 
 def main():
     btn_pressed = Button.NONE
-
     messages = bme280_get_readable_data()
     indexes = deque(list(range(len(messages))))
 
-    lcd_print_messages(messages, indexes)
-
     while True:
         messages = bme280_get_readable_data()
+        lcd_print_messages(messages, indexes)
         btn_last_state = btn_pressed
         # noinspection PyUnusedLocal
         btn_pressed = lcd_read_buttons()
@@ -83,7 +90,6 @@ def main():
                 indexes.rotate(1)
             elif btn_pressed == Button.DOWN:
                 indexes.rotate(-1)
-        lcd_print_messages(messages, indexes)
 
 
 if __name__ == '__main__':

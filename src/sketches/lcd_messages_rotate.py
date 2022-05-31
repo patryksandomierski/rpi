@@ -80,10 +80,10 @@ def main():
         btn_pressed = lcd_read_buttons()
         if btn_pressed != Button.NONE and btn_pressed != btn_last_state:
             if btn_pressed == Button.UP:
-                indexes.rotate(-1)
-            elif btn_pressed == Button.DOWN:
                 indexes.rotate(1)
-            lcd_print_messages(messages, indexes)
+            elif btn_pressed == Button.DOWN:
+                indexes.rotate(-1)
+        lcd_print_messages(messages, indexes)
 
 
 if __name__ == '__main__':

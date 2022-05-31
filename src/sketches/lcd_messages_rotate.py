@@ -2,7 +2,7 @@
 import threading
 from collections import deque
 from enum import Enum
-from time import sleep
+from time import sleep, perf_counter
 
 import bme280
 import smbus2
@@ -56,7 +56,9 @@ def lcd_read_buttons():
     return Button.NONE
 
 
-def lcd_print_messages(messages, indexes):
+def lcd_print_messages(messages, indexes=None):
+    if indexes is None:
+        indexes = [0, 1]
     lcd.setCursor(0, 0)
     lcd.printout(messages[indexes[0]].ljust(16))
     lcd.setCursor(0, 1)
@@ -106,19 +108,35 @@ def main():
     messages = get_sensors_readable_data()
     indexes = deque(list(range(len(messages))))
 
+    btn_hold = False
+    t1 = 0.0
+
     while True:
         messages = get_sensors_readable_data()
-        lcd_print_messages(messages, indexes)
+        if not btn_hold:
+            lcd_print_messages(messages, indexes)
         btn_last_state = btn_pressed
         # noinspection PyUnusedLocal
         btn_pressed = lcd_read_buttons()
         sleep(0.1)
         btn_pressed = lcd_read_buttons()
+        # scrolling
         if btn_pressed != Button.NONE and btn_pressed != btn_last_state:
             if btn_pressed == Button.UP:
                 indexes.rotate(1)
             elif btn_pressed == Button.DOWN:
                 indexes.rotate(-1)
+        # hold
+        elif btn_pressed != Button.NONE and btn_pressed == btn_last_state:
+            if not btn_hold:
+                t1 = perf_counter()
+            btn_hold = True
+            if perf_counter() - t1 > 2.0:
+                if btn_pressed == Button.SELECT:
+                    lcd_print_messages(["GG WP", "ciri0x5a"])
+        else:
+            btn_hold = False
+            t1 = 0.0
 
 
 if __name__ == '__main__':

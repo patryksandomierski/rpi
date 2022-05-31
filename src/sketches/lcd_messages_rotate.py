@@ -43,10 +43,11 @@ def main():
         btn_pressed = lcd_read_buttons()
         time.sleep(0.2)
         btn_pressed = lcd_read_buttons()
-        if btn_last_state != Button.NONE and btn_last_state != btn_pressed:
+        if btn_pressed != Button.NONE and btn_last_state != btn_pressed:
             num += 1
             str_out = format("{}          ", str(num))
             lcd.printout(str_out)
+            btn_last_state = btn_pressed
 
 
 if __name__ == '__main__':

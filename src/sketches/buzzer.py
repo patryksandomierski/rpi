@@ -1,9 +1,10 @@
 #!/usr/bin/python
 from time import sleep
 import RPi.GPIO as GPIO
+
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
-buzzer_id=13
+buzzer_id = 13
 GPIO.setup(buzzer_id, GPIO.OUT)
 
 while True:

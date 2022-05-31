@@ -87,10 +87,10 @@ def buzzer_temp_thread():
 
 
 def get_sensors_readable_data():
-    return ['Temp.     {}'.format(f"{temp:2.3f}"),
-            'Wilg.     {}'.format(f"{humi:2.3f}"),
-            'Cisn.    {}'.format(f"{press:4.3f}"),
-            'Temp.zewn.{}'.format(f"{probe_temp:2.3f}")]
+    return ['Temp.     {}'.format(f"{temp:06.03f}"),
+            'Wilg.     {}'.format(f"{humi:06.03f}"),
+            'Cisn.   {}'.format(f"{press:08.03f}"),
+            'Temp.zewn.{}'.format(f"{probe_temp:06.03f}")]
 
 
 def ds18b20_read_data_thread():

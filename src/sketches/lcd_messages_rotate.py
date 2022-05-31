@@ -95,7 +95,7 @@ def main():
         btn_last_state = btn_pressed
         # noinspection PyUnusedLocal
         btn_pressed = lcd_read_buttons()
-        sleep(0.2)
+        sleep(0.1)
         btn_pressed = lcd_read_buttons()
         if btn_pressed != Button.NONE and btn_pressed != btn_last_state:
             if btn_pressed == Button.UP:

@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import threading
 from collections import deque
 from enum import Enum
 from time import sleep
@@ -25,6 +26,9 @@ GPIO.setup(19, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(20, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 # setup ds18b20
 ds18b20 = w1thermsensor.W1ThermSensor()
+
+# global temp for slow ds18b20
+probe_temp = 0.0
 
 
 class Button(Enum):
@@ -59,23 +63,26 @@ def bme280_read_data():
     return temperature, humidity, pressure
 
 
-def ds18b20_read_data():
-    return ds18b20.get_temperature()
-
-
 def bme280_get_readable_data():
     temp, humi, press = bme280_read_data()
-    probe_temp = ds18b20_read_data()
     return ['Temp.    : {}'.format(f"{temp:.2f}"),
             'Wilg.    : {}'.format(f"{humi:.2f}"),
             'Cisn.    : {}'.format(f"{press:.2f}"),
             'Temp out.: {}'.format(f"{probe_temp:.2f}")]
 
 
+def ds18b20_read_data_thread():
+    while True:
+        global probe_temp
+        probe_temp = ds18b20.get_temperature()
+
+
 def main():
     btn_pressed = Button.NONE
     messages = bme280_get_readable_data()
     indexes = deque(list(range(len(messages))))
+
+    threading.Thread(target=ds18b20_read_data_thread).start()
 
     while True:
         messages = bme280_get_readable_data()

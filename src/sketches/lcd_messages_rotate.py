@@ -87,10 +87,10 @@ def buzzer_temp_thread():
 
 
 def get_sensors_readable_data():
-    return ['Temp.     {}'.format(f"{temp:.3f}"),
-            'Wilg.     {}'.format(f"{humi:.3f}"),
-            'Cisn.    {}'.format(f"{press:.3f}"),
-            'Temp zewn.{}'.format(f"{probe_temp:.3f}")]
+    return ['Temp.     {}'.format(f"{temp:2.3f}"),
+            'Wilg.     {}'.format(f"{humi:2.3f}"),
+            'Cisn.    {}'.format(f"{press:4.3f}"),
+            'Temp.zewn.{}'.format(f"{probe_temp:2.3f}")]
 
 
 def ds18b20_read_data_thread():
@@ -120,13 +120,14 @@ def main():
         btn_pressed = lcd_read_buttons()
         sleep(0.1)
         btn_pressed = lcd_read_buttons()
-        # scrolling
+        # press
         if btn_pressed != Button.NONE and btn_pressed != btn_last_state:
+            # scroll
             if btn_pressed == Button.UP:
                 indexes.rotate(1)
             elif btn_pressed == Button.DOWN:
                 indexes.rotate(-1)
-        # hold
+        # hold >2.0s
         elif btn_pressed != Button.NONE and btn_pressed == btn_last_state:
             if not btn_hold:
                 t1 = perf_counter()

@@ -1,12 +1,21 @@
 #!/usr/bin/python
 from collections import deque
 from enum import Enum
+from time import sleep
 
+import bme280
+import smbus2
 import RPi.GPIO as GPIO
 import rgb1602
-import time
 
+# setup bme280
+port = 3
+address = 0x76
+bus = smbus2.SMBus(port)
+bme280.load_calibration_params(bus, address)
+# setup lcd
 lcd = rgb1602.RGB1602(16, 2)
+# setup gpio buttons
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(16, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(17, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -39,18 +48,35 @@ def lcd_print_messages(messages, indexes):
     lcd.printout(messages[indexes[1]].ljust(16))
 
 
+def bme280_read_data():
+    data = bme280.sample(bus, address)
+    temperature = data.temperature
+    humidity = data.humidity
+    pressure = data.pressure
+    return temperature, humidity, pressure
+
+
+def bme280_get_readable_data():
+    temp, humi, press = bme280_read_data()
+    return ['Temp.: {}'.format(f"{temp:.2f}").ljust(16),
+            'Wilg.: {}'.format(f"{humi:.2f}").ljust(16),
+            'Cisn.: {}'.format(f"{press:.2f}").ljust(16)]
+
+
 def main():
     btn_pressed = Button.NONE
 
-    messages = ["1st message", "2nd message", "hoooray, im third!", "i guess im last...?"]
+    messages = bme280_get_readable_data()
     indexes = deque(list(range(len(messages))))
 
+    lcd_print_messages(messages, indexes)
+
     while True:
-        lcd_print_messages(messages, indexes)
+        messages = bme280_get_readable_data()
         btn_last_state = btn_pressed
         # noinspection PyUnusedLocal
         btn_pressed = lcd_read_buttons()
-        time.sleep(0.2)
+        sleep(0.2)
         btn_pressed = lcd_read_buttons()
         if btn_pressed != Button.NONE and btn_pressed != btn_last_state:
             if btn_pressed == Button.UP:

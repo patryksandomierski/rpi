@@ -27,7 +27,10 @@ GPIO.setup(20, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 # setup ds18b20
 ds18b20 = w1thermsensor.W1ThermSensor()
 
-# global temp for slow ds18b20
+# global sensors values
+temp = 0.0
+humi = 0.0
+press = 0.0
 probe_temp = 0.0
 
 
@@ -55,16 +58,17 @@ def lcd_print_messages(messages, indexes):
     lcd.printout(messages[indexes[1]].ljust(16))
 
 
-def bme280_read_data():
-    data = bme280.sample(bus, address)
-    temperature = data.temperature
-    humidity = data.humidity
-    pressure = data.pressure
-    return temperature, humidity, pressure
+def bme280_read_data_thread():
+    while True:
+        data = bme280.sample(bus, address)
+        global temp, humi, press
+        temp = data.temperature
+        humi = data.humidity
+        press = data.pressure
+        sleep(1)
 
 
-def bme280_get_readable_data():
-    temp, humi, press = bme280_read_data()
+def get_sensors_readable_data():
     return ['Temp.      {}'.format(f"{temp:.2f}"),
             'Wilg.      {}'.format(f"{humi:.2f}"),
             'Cisn.     {}'.format(f"{press:.2f}"),
@@ -78,14 +82,15 @@ def ds18b20_read_data_thread():
 
 
 def main():
+    threading.Thread(target=ds18b20_read_data_thread).start()
+    threading.Thread(target=bme280_read_data_thread).start()
+
     btn_pressed = Button.NONE
-    messages = bme280_get_readable_data()
+    messages = get_sensors_readable_data()
     indexes = deque(list(range(len(messages))))
 
-    threading.Thread(target=ds18b20_read_data_thread).start()
-
     while True:
-        messages = bme280_get_readable_data()
+        messages = get_sensors_readable_data()
         lcd_print_messages(messages, indexes)
         btn_last_state = btn_pressed
         # noinspection PyUnusedLocal
